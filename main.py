@@ -14,7 +14,28 @@
 # if __name__ == "__main__":
 #     main()
 
-# main.py
+#------------------------------------------------------
+# # main.py
+# import streamlit as st
+
+# def main():
+#     st.title("Main Page")
+    
+#     # Read the username from the file
+#     try:
+#         with open("user_data.txt", "r") as file:
+#             username = file.read()
+#             if username:
+#                 st.title(f"{username}'s Home Page")
+#                 # Add your main page content here
+#             else:
+#                 st.warning("Please sign up first.")
+#     except FileNotFoundError:
+#         st.warning("Please sign up first.")
+
+# if __name__ == "__main__":
+#     main()
+
 import streamlit as st
 
 def main():
@@ -34,4 +55,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
