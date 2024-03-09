@@ -25,13 +25,13 @@ with st.sidebar:
         )
 
 if selected == "Domain Expansion":
-    subprocess.run(["streamlit", "run", "Domain Expansion.py"])
+    subprocess.run(["streamlit", "run", "Domain-Expansion.py"])
 
 elif selected == "The Shibuya Incident":
-    subprocess.run(["streamlit", "run", "The Shibuya Incident.py"])
+    subprocess.run(["streamlit", "run", "The-Shibuya-Incident.py"])
 
 elif selected == "Nanami's beach":
-    subprocess.run(["streamlit", "run", "Nanami's beach.py"])
+    subprocess.run(["streamlit", "run", "Nanami-beach.py"])
 
     
 if __name__ == "__main__":
