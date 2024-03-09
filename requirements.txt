@@ -1,2 +1,4 @@
 streamlit
 urllib3==1.26.6
+openai
+streamlit_chat
