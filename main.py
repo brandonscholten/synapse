@@ -37,6 +37,7 @@
 #     main()
 
 import streamlit as st
+from streamlit_option_menu import option_menu
 
 def main():
     
@@ -51,6 +52,13 @@ def main():
                 st.warning("Please sign up first.")
     except FileNotFoundError:
         st.warning("Please sign up first.")
-
+    
 if __name__ == "__main__":
     main()
+
+with st.sidebar:
+        selected = option_menu(
+            menu_title= "course list",
+            options=["Domain Expansion", "The Shibuya Incident", "Nanami's beach"],
+        )
+st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
