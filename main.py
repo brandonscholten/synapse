@@ -39,12 +39,11 @@
 import streamlit as st
 
 def main():
-    st.title("Main Page")
     
     # Read the username from the file
     try:
         with open("user_data.txt", "r") as file:
-            username = file.read()
+            username = file.readline()
             if username:
                 st.title(f"{username}'s Home Page")
                 # Add your main page content here

@@ -39,11 +39,15 @@ import subprocess
 def signup():
     st.title("User Signup")
     username = st.text_input("Enter your username:")
+    password = st.text_input("Enter your password:")
 
     if st.button("Submit"):
         with open("user_data.txt", "w") as file:
             file.write(username)
+            file.write(password)
         st.success("Signup successful!")
 
         # Automatically open main.py after storing the username
         subprocess.run(["streamlit", "run", "main.py"])
+
+signup()
