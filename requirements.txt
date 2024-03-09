@@ -3,3 +3,5 @@ urllib3==1.26.6
 openai
 streamlit_chat
 gtts
+SpeechRecognition
+streamlit_option_menu
