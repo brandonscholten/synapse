@@ -4,3 +4,4 @@ openai
 streamlit_chat
 gtts
 SpeechRecognition
+streamlit_option_menu
