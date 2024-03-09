@@ -38,6 +38,7 @@
 
 import streamlit as st
 from streamlit_option_menu import option_menu
+import subprocess
 
 def main():
     
@@ -52,13 +53,26 @@ def main():
                 st.warning("Please sign up first.")
     except FileNotFoundError:
         st.warning("Please sign up first.")
-    
-if __name__ == "__main__":
-    main()
+
+st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
 
 with st.sidebar:
         selected = option_menu(
             menu_title= "course list",
-            options=["Domain Expansion", "The Shibuya Incident", "Nanami's beach"],
+            options= ["Domain Expansion", "The Shibuya Incident", "Nanami's beach"],
         )
-st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
+if selected == "Domain Expansion":
+        subprocess.run(["streamlit", "run", "Domain Expansion.py"])
+
+elif selected == "The Shibuya Incident":
+        subprocess.run(["streamlit", "run", "The Shibuya Incident.py"])
+
+elif selected == "Nanami's beach":
+        subprocess.run(["streamlit", "run", "Nanami's beach.py"])
+
+    
+if __name__ == "__main__":
+    main()
+
+
+
