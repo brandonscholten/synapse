@@ -17,7 +17,7 @@ def api_calling(prompt):
     message = completions.choices[0].text
     return message
 
-st.title("Translate!")
+st.title("Create a summary!")
 if 'user_input' not in st.session_state:
     st.session_state['user_input'] = []
 
