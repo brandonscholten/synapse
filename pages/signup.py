@@ -4,6 +4,18 @@ from streamlit_extras.switch_page_button import switch_page
 from google.cloud import firestore
 import json 
 
+page_bg_img = f"""
+<style>
+[data-testid="stAppViewContainer"] {{
+background-image: url("https://i.pinimg.com/1200x/47/26/f1/4726f134466769d03b957290290c101f.jpg");
+background-size: cover;
+}}
+
+
+</style>
+"""
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
 css ='''
 <style>
     [data-testid="stSidebar"] {
@@ -12,6 +24,8 @@ css ='''
 </style>
 '''
 st.markdown(css, unsafe_allow_html=True)
+
+
 
 fb_credentials = st.secrets["firebase"]['my_project_settings']
 fb_dict = dict(fb_credentials)
