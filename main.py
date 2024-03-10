@@ -1,38 +1,51 @@
+
 import streamlit as st
-from streamlit_option_menu import option_menu
-import subprocess
 
+# Function to display the homepage content
+def homepage():
+    with open("user_data.txt", "r") as file:
+        username = file.readline()
+        if username:
+            st.title(f"{username}'s Home Page")
+    
+
+# Function to display the Domain Expansion page content
+def domain_expansion():
+    st.title("Domain Expansion Page")
+    st.write("This is the Domain Expansion page content.")
+
+# Function to display The Shibuya Incident page content
+def shibuya_incident():
+    st.title("The Shibuya Incident Page")
+    st.write("This is The Shibuya Incident page content.")
+
+# Function to display Nanami's Beach page content
+def nanamis_beach():
+    st.title("Nanami's Beach Page")
+    st.write("This is Nanami's Beach page content.")
+
+# Main function to create the Streamlit app
 def main():
-    
-    # Read the username from the file
-    try:
-        with open("user_data.txt", "r") as file:
-            username = file.readline()
-            if username:
-                st.title(f"{username}'s Home Page")
-                # Add your main page content here
-            else:
-                st.warning("Please sign up first.")
-    except FileNotFoundError:
-        st.warning("Please sign up first.")
 
-st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
 
-with st.sidebar:
-        selected = option_menu(
-            menu_title= "course list",
-            options= ["Home", "Domain Expansion", "The Shibuya Incident", "Nanami's beach"],
-        )
+    # Add a navigation bar
+    with open("user_data.txt", "r") as file:
+        username = file.readline()
+        if username:
+            page = st.sidebar.radio("Select a page", [f"{username}'s Homepage", "Domain Expansion", "The Shibuya Incident", "Nanami's Beach"])
 
-if selected == "Domain Expansion":
-    subprocess.run(["streamlit", "run", "Domain-Expansion.py"])
+    # Display the selected page
+    if page == f"{username}'s Homepage":
+        homepage()
+    elif page == "Domain Expansion":
+        domain_expansion()
+    elif page == "The Shibuya Incident":
+        shibuya_incident()
+    elif page == "Nanami's Beach":
+        nanamis_beach()
 
-elif selected == "The Shibuya Incident":
-    subprocess.run(["streamlit", "run", "The-Shibuya-Incident.py"])
-
-elif selected == "Nanami's beach":
-    subprocess.run(["streamlit", "run", "Nanami-beach.py"])
-
-    
+# Run the Streamlit app
 if __name__ == "__main__":
     main()
+
+st.write("This is the homepage. Choose a page from the navigation bar.")
