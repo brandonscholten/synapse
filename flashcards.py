@@ -23,7 +23,7 @@ def get_text():
     return input_text
 
 def get_file_content(uploaded_file):
-    file_contents = uploaded_file.read().decode("utf-8")
+    file_contents = uploaded_file.read().decode("latin-1")
     return file_contents
 
 user_input = get_text()

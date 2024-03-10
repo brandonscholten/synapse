@@ -32,7 +32,7 @@ def get_file():
     uploaded_file = st.file_uploader("Upload a file", type=["txt", "pdf"])
     if uploaded_file is not None:
         file_contents = uploaded_file.read()
-        return file_contents.decode("utf-8")
+        return file_contents.decode("latin-1")
     else:
         return ""
 
