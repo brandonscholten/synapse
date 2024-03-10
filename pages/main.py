@@ -33,28 +33,6 @@ show_pages(
 )
 hide_pages(["Login", "Sign Up", "Home", "Summary"])
 
-# Function to display the homepage content
-def homepage():
-    with open("user_data.txt", "r") as file:
-        username = file.readline()
-        if username:
-            st.title(f"{username}'s Home Page")
-
-#classes for notebook and class
-class Notebook:
-    title = "New Notebook"
-    notes = []
-    def view(self): 
-        st.title(self.title)
-        st.write('pretend there are nicely formatted notes here')
-        #note cards go here
-
-class Note: 
-    title = "New Note"
-    note = ""
-    def view(): print("stub")
-
-
 def make_notebook(): 
     st.session_state["notebook"] = Notebook()
     st.session_state["notebook"].title = st.session_state['notebook_title']
@@ -68,51 +46,62 @@ def new_notebook():
     with st.form("notebook_name"):
         #st.session_state["notebook_title"] = 
         st.text_input("title", key='notebook_title')
-        print("set notebook title")
         st.form_submit_button("Ok", on_click=make_notebook)
-    print(st.session_state.NOTEBOOKS)
-    print(st.session_state)
+
+# Function to display the homepage content
+def homepage():
+    with open("user_data.txt", "r") as file:
+        username = file.readline()
+        if username:
+            st.title(f"{username}'s Home Page")
+
+#classes for notebook and class
+class Notebook:
+    title = "New Notebook"
+    notes = []
+    def view(self): 
+        st.title(self.title)
+        st.button("new", use_container_width=True, on_click=self.new_note)
+        #note cards go here
+        for i in self.notes: i.view()
+
+    def make_note(self):
+        st.session_state["note"] = Note()
+        st.session_state["note"].title = st.session_state['note_title']
+        st.session_state["note_id"] += 1
+        self.notes.append(st.session_state["note"])
+
+    def new_note(self):
+        with st.form("note_name"):
+            st.text_input("title", key="note_title")
+            st.form_submit_button("Ok", on_click=self.make_note)
+
+class Note: 
+    title = "New Note"
+    note = "new note"
+    def view(self):
+        with st.container():
+            st.title(self.title)
+            self.note = st.text_area("contents",self.note)
 
 # Main function to create the Streamlit app
 def main():
-<<<<<<< HEAD
-    #st.session_state.tryArray.append("Hello")
-    #print(st.session_state.tryArray)
-    # Read the username from the file
-    try:
-        with open("user_data.txt", "r") as file:
-            username = file.readline()
-            if username:
-                st.title(f"{st.session_state.username}'s Home Page")
-                st.markdown('<style>div.Widget.row-widget.stTitle { background-color: #7795CB; }</style>', unsafe_allow_html=True)
-                st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
-                page = st.sidebar.radio("Select a page", [f"{st.session_state.username}'s Homepage", "Domain Expansion", "The Shibuya Incident", "Nanami's Beach"])
-            else:
-                st.warning("Please sign up first.")
-    except FileNotFoundError:
-        st.warning("Please sign up first.")
+    
+    st.markdown('<style>div.Widget.row-widget.stTitle { background-color: #7795CB; }</style>', unsafe_allow_html=True)
+    page = st.sidebar.radio("Select a page", [f"{st.session_state.username}'s Homepage", "Domain Expansion", "The Shibuya Incident", "Nanami's Beach"])
 
-    # with st.sidebar:
-    #     selected = option_menu(
-    #         menu_title= "course list",
-    #         options= ["Home", "Domain Expansion", "The Shibuya Incident", "Nanami's beach"],
-    #     )
-        
-    if page == "Domain Expansion":
-        domain_expansion()
+    if page == f"{st.session_state.username}'s Homepage":
+        st.title(f"{st.session_state.username}'s Home Page")
+    elif page == "Domain Expansion":
+        print("hello")
     elif page == "The Shibuya Incident":
-        shibuya_incident()
+        print("hello")
     elif page == "Nanami's Beach":
-        nanamis_beach()
+        print("hello")
 
-
-=======
     if "NOTEBOOKS" not in st.session_state:
         print("overwriting session state")
         st.session_state["NOTEBOOKS"] = [] #list of all the ["NOTEBOOKS"] in memory
-        #st.session_state["notebook_title"] = ''
-        #st.session_state["note_id"] = 0
->>>>>>> 683243afe92bb88f784830cf86cd12e2851612cf
     
     if "notebook_title" not in st.session_state:
         st.session_state["notebook_title"] = ''
@@ -120,14 +109,17 @@ def main():
     if "note_id" not in st.session_state:
         st.session_state["note_id"] = 0
 
-    # Add a navigation bar
-    with open("user_data.txt", "r") as file:
-        username = file.readline()
-        if username:
-            st.sidebar.button("new notebook", on_click=new_notebook)
-            for i in st.session_state.NOTEBOOKS:
-                st.sidebar.button(i.title, on_click=(i.view), key=st.session_state["note_id"]-st.session_state.NOTEBOOKS.index(i))
+    if "NOTES" not in st.session_state:
+        st.session_state["NOTES"] = []
     
+    if "note_title" not in st.session_state:
+        st.session_state["note_title"] = ""
+
+    # Add a navigation bar
+
+    st.sidebar.button("new notebook", on_click=new_notebook)
+    for i in st.session_state.NOTEBOOKS:
+    	st.sidebar.button(i.title, on_click=(i.view), key=st.session_state["note_id"]-st.session_state.NOTEBOOKS.index(i))
 
 # Run the Streamlit app
 if __name__ == "__main__":
