@@ -59,6 +59,14 @@ if 'openai_response' not in st.session_state:
     st.session_state['openai_response'] = []
 
 def get_text():
+    option = st.selectbox(
+        'Select a current Notebook',
+        (
+            st.session_state.NOTEBOOKS
+        )
+    )
+
+    st.write('You selected:', option)
     input_text = st.text_input("Write here", key="input")
     return input_text
 

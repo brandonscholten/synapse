@@ -50,7 +50,7 @@ def login():
             st.session_state.session_id = 0
             st.session_state.number_of_notes = use.get("num_notes")
             st.session_state.notebook = use.get("notebook")
-            switch_page("summary")
+            switch_page("main")
     st.error("Incorrect Username or Password")
 
 username = st.text_input("Enter your username:")

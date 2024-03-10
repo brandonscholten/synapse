@@ -61,7 +61,7 @@ def signup():
         st.session_state.session_id = 0
         st.success("Signup successful!")
         # Automatically open main.py after storing the username
-        switch_page("summary")
+        switch_page("main")
 
 def toDict(user, pas, num_notes, notebook, id):
     return {"username": user, "password": pas, "num_notes": num_notes, "notebook": notebook, "id": id }

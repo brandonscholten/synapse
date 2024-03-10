@@ -22,9 +22,10 @@ show_pages(
         Page("pages/main.py", "Home"),
         Page("pages/login.py", "Login"),
         Page("pages/signup.py", "Sign Up"),
+        Page("pages/summary.py", "Summary")
     ]
 )
-hide_pages(["Login", "Sign Up", "Home"])
+hide_pages(["Login", "Sign Up", "Home", "Summary"])
 
 # Function to display the homepage content
 def homepage():
