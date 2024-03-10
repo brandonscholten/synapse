@@ -49,6 +49,7 @@ db = firestore.Client.from_service_account_json("grizzdata-firebase.json")
 doc = db.collection("user")
 
 def signup():
+    #st.session_state.NOTEBOOKS = []
     st.title("User Signup")
     username = st.text_input("Enter your username:")
     password = st.text_input("Enter your password:")
