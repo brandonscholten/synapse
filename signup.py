@@ -35,6 +35,18 @@
 
 import streamlit as st
 import subprocess
+from google.cloud import firestore
+import json 
+
+fb_credentials = st.secrets["firebase"]['my_project_settings']
+fb_dict = dict(fb_credentials)
+
+# Convert and write JSON object to file
+with open("grizzdata-firebase.json", "w") as outfile: 
+    json.dump(fb_dict, outfile)
+
+db = firestore.Client.from_service_account_json("grizzdata-firebase.json")
+doc = db.collection("user")
 
 def signup():
     st.title("User Signup")
@@ -42,12 +54,14 @@ def signup():
     password = st.text_input("Enter your password:")
 
     if st.button("Submit"):
-        with open("user_data.txt", "w") as file:
-            file.write(username)
-            file.write(password)
+        userDict = toDict(username, password)
+        doc.add(userDict)
         st.success("Signup successful!")
 
         # Automatically open main.py after storing the username
         subprocess.run(["streamlit", "run", "main.py"])
+
+def toDict(user, pas):
+    return {"username": user, "password": pas }
 
 signup()
