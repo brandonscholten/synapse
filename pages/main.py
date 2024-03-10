@@ -5,6 +5,7 @@ import openai
 from streamlit_chat import message
 from google.cloud import firestore
 import json 
+import time
 
 page_bg_img = f"""
 <style>
@@ -13,7 +14,7 @@ background-image: url("https://i.pinimg.com/1200x/47/26/f1/4726f134466769d03b957
 background-size: cover;
 }}
 
-[data-test="stHeading"] > .main{{
+[data-testid="stTitle"] {{
 background-color: #556f9f;
 }}
 
@@ -228,6 +229,23 @@ def quiz():
                     key=str(i) + 'data_by_user')
 
 
+def pomodoro_timer(work_time, break_time):
+    work_seconds = work_time * 60
+    break_seconds = break_time * 60
+
+    work_placeholder = st.empty()
+    break_placeholder = st.empty()
+
+    work_placeholder.write("Work!")
+    for i in range(work_seconds):
+        time.sleep(1)
+        work_placeholder.write(f"{work_seconds-i} seconds left")
+
+    break_placeholder.write("Break!")
+    for i in range(break_seconds):
+        time.sleep(1)
+        break_placeholder.write(f"{break_seconds-i} seconds left")
+
 def make_notebook(): 
     st.session_state["notebook"] = Notebook()
     st.session_state["notebook"].title = st.session_state['notebook_title']
@@ -310,11 +328,20 @@ def main():
     if "note_title" not in st.session_state:
         st.session_state["note_title"] = ""
 
-    # Add a navigation bar
-
     st.sidebar.button("new notebook", on_click=new_notebook)
     for i in st.session_state.NOTEBOOKS:
-    	st.sidebar.button(i.title, on_click=(i.view), key=st.session_state["note_id"]-st.session_state.NOTEBOOKS.index(i))
+        st.sidebar.button(i.title, on_click=(i.view), key=st.session_state["note_id"]-st.session_state.NOTEBOOKS.index(i))
+
+    #add pomodoro
+    st.sidebar.subheader("Pomodoro Timer")
+    work_time = st.sidebar.slider("Work Time (minutes)", 5, 90, 25)
+    break_time = st.sidebar.slider("Break Time (minutes)", 1, 30, 5)
+
+    if st.sidebar.button("Start Timer"):
+        pomodoro_timer(work_time, break_time)
+
+
+    # Add a navigation bar
 
 # Run the Streamlit app
 if __name__ == "__main__":
