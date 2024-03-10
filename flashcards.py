@@ -6,7 +6,7 @@ openai.api_key = "YOUR_OPENAI_API_KEY"
 
 def generate_flashcard(prompt):
     completions = openai.Completion.create(
-        engine="text-davinci-003",
+        engine="gpt-3.5-turbo-instruct",
         prompt=prompt,
         max_tokens=150,  # Adjust token length based on your requirement
         n=1,
