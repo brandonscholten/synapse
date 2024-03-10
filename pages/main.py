@@ -2,13 +2,14 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 from st_pages import Page, Section, show_pages, add_page_title, hide_pages
 import openai
+from streamlit_extras.switch_page_button import switch_page
 from streamlit_chat import message
 from google.cloud import firestore
-import json 
-import time
 import speech_recognition as sr
 from pydub import AudioSegment
 from gtts import gTTS
+import json 
+import time
 
 page_bg_img = f"""
 <style>
@@ -35,10 +36,20 @@ show_pages(
         Page("pages/main.py", "Home"),
         Page("pages/login.py", "Login"),
         Page("pages/signup.py", "Sign Up"),
-        Page("pages/summary.py", "Summary")
+        Page("pages/main.py", "Main")
     ]
 )
-hide_pages(["Login", "Sign Up", "Home", "Summary"])
+hide_pages(["Login", "Sign Up", "Home", "main"])
+
+
+fb_credentials = st.secrets["firebase"]['my_project_settings']
+fb_dict = dict(fb_credentials)
+
+with open("grizzdata-firebase.json", "w") as outfile: 
+    json.dump(fb_dict, outfile)
+
+db = firestore.Client.from_service_account_json("grizzdata-firebase.json")
+doc = db.collection("user").document(st.session_state.docID)
 
 def translation():
     openai.api_key = "API_KEY_HERE"
@@ -206,18 +217,10 @@ def flashcards():
 
 
 def summary():
-    fb_credentials = st.secrets["firebase"]['my_project_settings']
-    fb_dict = dict(fb_credentials)
-
-    with open("grizzdata-firebase.json", "w") as outfile: 
-        json.dump(fb_dict, outfile)
-
-    db = firestore.Client.from_service_account_json("grizzdata-firebase.json")
-    doc = db.collection("user").document(st.session_state.docID)
     ###
 
-## Key goes here
-#openai.api_key = ""
+    ## Key goes here
+    openai.api_key = ""
 
     def api_calling(prompt):
         completions = openai.Completion.create(
@@ -242,11 +245,12 @@ def summary():
         option = st.selectbox(
             'Select a current Notebook',
             (
-                st.session_state.NOTEBOOKS
+                doc.get().to_dict()
             )
         )
 
         st.write('You selected:', option)
+        st.session_state.choosen_notebook = option
         input_text = st.text_input("Write here", key="input")
         return input_text
 
@@ -266,7 +270,7 @@ def summary():
         output = api_calling(prompt)
         output = output.lstrip("\n")
 
-    # Store the output
+        # Store the output
         st.session_state.openai_response.append(prompt)
         st.session_state.user_input.append(output)
         if st.session_state.session_id == 0:
@@ -274,7 +278,7 @@ def summary():
             st.session_state.number_of_notes += 1
             st.write("In")
             doc.update({
-                f"notebook.note{st.session_state.number_of_notes}": st.session_state.user_input,
+                f"{st.session_state.choosen_notebook}.note{st.session_state.number_of_notes}": st.session_state.user_input,
                 "num_notes": firestore.Increment(1),
                 "id": st.session_state.session_id
             })
@@ -290,7 +294,7 @@ def summary():
         for i in range(len(st.session_state['user_input']) - 1, -1, -1):
             # This function displays user input
             message(st.session_state["user_input"][i], 
-                 key=str(i),avatar_style="icons")
+                    key=str(i),avatar_style="icons")
             # This function displays OpenAI response
             message(st.session_state['openai_response'][i], 
                     avatar_style="miniavs",is_user=True,
@@ -378,6 +382,9 @@ def make_notebook():
     st.session_state["notebook"].title = st.session_state['notebook_title']
     st.session_state['note_id'] += 1
     st.session_state.NOTEBOOKS.append(st.session_state["notebook"])
+    doc.update({
+        f"{st.session_state['notebook_title']}": {}
+    })
 
 def new_notebook():
     # create a new notebook
@@ -388,18 +395,35 @@ def new_notebook():
         st.text_input("title", key='notebook_title')
         st.form_submit_button("Ok", on_click=make_notebook)
 
-# Function to display the homepage content
-def homepage():
-    with open("user_data.txt", "r") as file:
-        username = file.readline()
-        if username:
-            st.title(f"{username}'s Home Page")
-
 #classes for notebook and class
 class Notebook:
     title = "New Notebook"
     notes = []
-    def view(self): 
+    num_notes = 1
+    total = st.session_state.number_of_notes
+
+    def set_note(self):
+        st.session_state["note"] = Note()
+        notebook_data = doc.get().to_dict()
+        st.session_state["note"].title = st.session_state['note_title']
+        st.session_state["note_id"] += 1
+        first_note = notebook_data.get(f"{st.session_state['notebook_title']}", {"note1"})
+        st.session_state["note"].note = "No note found"
+        st.session_state["note"].note = first_note
+        self.notes.append(st.session_state["note"])
+        self.num_notes += 1
+
+
+    def view(self):
+        st.session_state["note"] = Note()
+        notebook_data = doc.get().to_dict()
+        st.session_state["note"].title = st.session_state['note_title']
+        st.session_state["note_id"] += 1
+        first_note = notebook_data.get("notebook")
+        st.session_state["note"].note = "No note found"
+        st.session_state["note"].note = first_note.get("note1")[0]
+        self.notes.append(st.session_state["note"])
+        self.num_notes += 1
         st.title(self.title)
         st.button("new", use_container_width=True, on_click=self.new_note)
         #note cards go here
@@ -440,7 +464,6 @@ def main():
         quiz()
     elif page== "Translation":
         translation()
-
     if "NOTEBOOKS" not in st.session_state:
         print("overwriting session state")
         st.session_state["NOTEBOOKS"] = [] #list of all the ["NOTEBOOKS"] in memory
@@ -468,6 +491,10 @@ def main():
 
     if st.sidebar.button("Start Timer"):
         pomodoro_timer(work_time, break_time)
+
+    if st.sidebar.button("Log out"):
+        switch_page("login")
+        
 
 
     # Add a navigation bar
