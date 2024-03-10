@@ -32,6 +32,10 @@ def login():
         use = doc.to_dict()
         if username == use.get("username") and password == use.get("password"):
             st.success("Signup successful!")
+            st.session_state.username = username
+            st.session_state.password = password
+            st.session_state.number_of_notes = use.get("num_notes")
+            st.session_state.notebook = use.get("notebook")
             switch_page("main")
     st.error("Incorrect Username or Password")
 

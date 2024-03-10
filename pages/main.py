@@ -14,13 +14,14 @@ show_pages(
 hide_pages(["Login", "Sign Up", "Home"])
 
 def main():
-    
+    #st.session_state.tryArray.append("Hello")
+    #print(st.session_state.tryArray)
     # Read the username from the file
     try:
         with open("user_data.txt", "r") as file:
             username = file.readline()
             if username:
-                st.title(f"{username}'s Home Page")
+                st.title(f"{st.session_state.username}'s Home Page")
                 # Add your main page content here
             else:
                 st.warning("Please sign up first.")
