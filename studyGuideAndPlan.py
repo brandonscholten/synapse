@@ -17,6 +17,19 @@ def api_calling(prompt):
     return message
 
 st.title("Create a study guide!")
+
+# Set background color
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #88B8F4 ;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 if 'user_input' not in st.session_state:
     st.session_state['user_input'] = []
 
