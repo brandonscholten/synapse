@@ -28,27 +28,28 @@ def signup():
     st.title("User Signup")
     #st.session_state.tryArray = []
     st.session_state.username = st.text_input("Enter your username:")
+    taken = False
     for cDoc in copyDoc:
         use = cDoc.to_dict()
         if(st.session_state.username == use.get("username")):
             taken = True
             st.error("Username is taken")
             break
-        taken = False
     st.session_state.password = st.text_input("Enter your password:")
-    st.session_state.number_of_notes = 1
-    st.session_state.notebook = {"title":"", f"note{st.session_state.number_of_notes}":{"title":"", "text":""} }
+    st.session_state.number_of_notes = 0
+    st.session_state.notebook = {"title":""}
     
 
     if st.button("Submit") and not taken:
-        userDict = toDict(st.session_state.username, st.session_state.password, st.session_state.number_of_notes, st.session_state.notebook)
-        doc.add(userDict)
+        userDict = toDict(st.session_state.username, st.session_state.password, st.session_state.number_of_notes, st.session_state.notebook, "")
+        update_time, doc_ref = doc.add(userDict)
+        st.session_state.docID = doc_ref.id
+        st.session_state.session_id = 0
         st.success("Signup successful!")
-
         # Automatically open main.py after storing the username
-        switch_page("main")
+        switch_page("summary")
 
-def toDict(user, pas, num_notes, notebook):
-    return {"username": user, "password": pas, "num_notes": num_notes, "notebook": notebook }
+def toDict(user, pas, num_notes, notebook, id):
+    return {"username": user, "password": pas, "num_notes": num_notes, "notebook": notebook, "id": id }
 
 signup()

@@ -2,8 +2,21 @@
 import streamlit as st
 import openai
 from streamlit_chat import message
+from google.cloud import firestore
+import json 
 
 
+###SETS up firebase
+fb_credentials = st.secrets["firebase"]['my_project_settings']
+fb_dict = dict(fb_credentials)
+
+with open("grizzdata-firebase.json", "w") as outfile: 
+    json.dump(fb_dict, outfile)
+
+db = firestore.Client.from_service_account_json("grizzdata-firebase.json")
+doc = db.collection("user").document(f"{st.session_state.docID}")
+
+###
 
 def api_calling(prompt):
     completions = openai.Completion.create(
@@ -47,6 +60,12 @@ if user_input or file_input:
     # Store the output
     st.session_state.openai_response.append(prompt)
     st.session_state.user_input.append(output)
+    st.session_state.number_of_notes += 1
+    doc.update({
+            f"notebook.note{st.session_state.number_of_notes}": st.session_state.user_input,
+            "num_notes": firestore.Increment(1),
+            "id": st.session_state.session_id
+    })
 
 message_history = st.empty()
 
