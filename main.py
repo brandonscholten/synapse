@@ -13,13 +13,18 @@ def homepage():
 class Notebook:
     title = "New Notebook"
     notes = []
-    def view(): print("works")
+    def view(self): 
+        st.title(self.title)
+        st.write('pretend there are nicely formatted notes here')
+        #note cards go here
 
 class Note: 
     title = "New Note"
     note = ""
+    def view(): print("stub")
 
-def make_notebook(): #TODO: name is not being passed correctly
+
+def make_notebook(): 
     st.session_state["notebook"] = Notebook()
     st.session_state["notebook"].title = st.session_state['notebook_title']
     st.session_state['note_id'] += 1
@@ -57,11 +62,11 @@ def main():
         if username:
             st.sidebar.button("new notebook", on_click=new_notebook)
             for i in st.session_state.NOTEBOOKS:
-                st.sidebar.button(i.title, on_click=print, args=("success", ), key=st.session_state["note_id"]-st.session_state.NOTEBOOKS.index(i))
+                st.sidebar.button(i.title, on_click=(i.view), key=st.session_state["note_id"]-st.session_state.NOTEBOOKS.index(i))
     
 
 # Run the Streamlit app
 if __name__ == "__main__":
     main()
 
-st.write("This is the homepage. Choose a page from the navigation bar.")
+
