@@ -3,7 +3,7 @@ from streamlit_option_menu import option_menu
 import subprocess
 from st_pages import Page, Section, show_pages, add_page_title, hide_pages
 
-add_page_title()
+#add_page_title()
 show_pages(
     [
         Page("pages/main.py", "Home"),
@@ -28,8 +28,6 @@ def main():
     except FileNotFoundError:
         st.warning("Please sign up first.")
 
-st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
-
 with st.sidebar:
         selected = option_menu(
             menu_title= "course list",
@@ -48,3 +46,4 @@ elif selected == "Nanami's beach":
     
 if __name__ == "__main__":
     main()
+    st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
