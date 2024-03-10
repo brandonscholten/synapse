@@ -6,6 +6,9 @@ from streamlit_chat import message
 from google.cloud import firestore
 import json 
 import time
+import speech_recognition as sr
+from pydub import AudioSegment
+from gtts import gTTS
 
 page_bg_img = f"""
 <style>
@@ -36,6 +39,130 @@ show_pages(
     ]
 )
 hide_pages(["Login", "Sign Up", "Home", "Summary"])
+
+def translation():
+    openai.api_key = "API_KEY_HERE"
+
+    def api_calling(prompt):
+        completions = openai.Completion.create(
+            engine="latin-1",
+            prompt=prompt,
+            max_tokens=1024,
+            n=1,
+            stop=None,
+            temperature=0.5,
+        )
+        message = completions.choices[0].text
+        return message
+
+    st.title("Translate!")
+    if 'user_input' not in st.session_state:
+        st.session_state['user_input'] = []
+
+    if 'openai_response' not in st.session_state:
+        st.session_state['openai_response'] = []
+
+    def get_text():
+        input_text = st.text_input("Write here", key="input")
+        return input_text
+
+    def get_file():
+        uploaded_file = st.file_uploader("Upload a file", type=["txt", "pdf"])
+        if uploaded_file is not None:
+            file_contents = uploaded_file.read()
+            return file_contents.decode("latin-1")
+        else:
+            return ""
+
+    user_input = get_text()
+    file_input = get_file()
+
+    if user_input or file_input:
+        prompt = user_input + file_input
+        output = api_calling(prompt)
+        output = output.lstrip("\n")
+
+        # Store the output
+        st.session_state.openai_response.append(prompt)
+        st.session_state.user_input.append(output)
+
+    message_history = st.empty()
+
+    if st.session_state['user_input']:
+        for i in range(len(st.session_state['user_input']) - 1, -1, -1):
+            # This function displays user input
+            message(st.session_state["user_input"][i], 
+                key=str(i),avatar_style="icons")
+            # This function displays OpenAI response
+            message(st.session_state['openai_response'][i], 
+                    avatar_style="miniavs",is_user=True,
+                    key=str(i) + 'data_by_user')
+            
+    def soundtotext():
+        st.title("Write a Sound file:")
+        def process_audio_file(audio_file):
+            # Convert audio file to wav format
+            audio = AudioSegment.from_file(audio_file)
+            audio.export("temp_audio.wav", format="wav")
+
+            # Recognize speech from the audio file
+            recognizer = sr.Recognizer()
+            with sr.AudioFile("temp_audio.wav") as source:
+                audio_data = recognizer.record(source)
+                try:
+                    text = recognizer.recognize_google(audio_data)
+                    return text
+                except sr.UnknownValueError:
+                    st.warning("Sorry, I could not understand the audio.")
+                except sr.RequestError as e:
+                    st.error(f"Could not request results from Google Speech Recognition service; {e}")
+
+            # Streamlit app
+            def play():
+                st.title("Speech-to-Text from Uploaded Audio")
+
+                # File uploader
+                uploaded_file = st.file_uploader("Upload audio file", type=["mp3", "wav"])
+
+                # Button to trigger speech recognition
+                if uploaded_file is not None:
+                    text = process_audio_file(uploaded_file)
+                    if text:
+                        st.write("Text:", text)
+
+            if __name__ == "__main__":
+                play()
+    if __name__=="__soundtotext__":
+        soundtotext()
+
+    def texttosound():
+        st.title("turn your text to sound")
+        def text_to_speech(text):
+            # Generate the TTS audio
+            tts = gTTS(text)
+            # Save the audio to a temporary file
+            tts.save("temp_audio.mp3")
+            # Play the audio
+            st.audio("temp_audio.mp3", format="audio/mp3")
+
+        # Streamlit app
+        def main():
+            st.title("Text-to-Speech App")
+
+            # Text input
+            text_input = st.text_input("Enter text to convert to speech")
+
+            # Button to trigger TTS
+            if st.button("Convert to Speech"):
+                if text_input:
+                    text_to_speech(text_input)
+            else:
+                st.warning("Please enter some text first.")
+
+        if __name__ == "__main__":
+            main()
+    if __name__=="__texttosound__":
+            texttosound()
 
 def flashcards():
     openai.api_key = "YOUR_OPENAI_API_KEY"
@@ -301,7 +428,7 @@ class Note:
 def main():
     
     st.markdown('<style>div.Widget.row-widget.stTitle { background-color: #7795CB; }</style>', unsafe_allow_html=True)
-    page = st.sidebar.radio("Select a page", [f"{st.session_state.username}'s Homepage", "Flashcards", "Summary", "Quiz"])
+    page = st.sidebar.radio("Select a page", [f"{st.session_state.username}'s Homepage", "Flashcards", "Summary", "Quiz", "Translation"])
 
     if page == f"{st.session_state.username}'s Homepage":
         st.title(f"{st.session_state.username}'s Home Page")
@@ -311,6 +438,8 @@ def main():
         summary()
     elif page == "Quiz":
         quiz()
+    elif page== "Translation":
+        translation()
 
     if "NOTEBOOKS" not in st.session_state:
         print("overwriting session state")
