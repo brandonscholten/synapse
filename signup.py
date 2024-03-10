@@ -36,6 +36,14 @@
 import streamlit as st
 import subprocess
 from google.cloud import firestore
+import json 
+
+fb_credentials = st.secrets["firebase"]['my_project_settings']
+fb_dict = dict(fb_credentials)
+
+# Convert and write JSON object to file
+with open("grizzdata-firebase.json", "w") as outfile: 
+    json.dump(fb_dict, outfile)
 
 db = firestore.Client.from_service_account_json("grizzdata-firebase.json")
 doc = db.collection("user")
