@@ -7,7 +7,7 @@ openai.api_key = "API_KEY_HERE"
 
 def api_calling(prompt):
     completions = openai.Completion.create(
-        engine="gpt-3.5-turbo-instruct",
+        engine="latin-1",
         prompt=prompt,
         max_tokens=1024,
         n=1,
