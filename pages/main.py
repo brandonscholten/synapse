@@ -8,9 +8,15 @@ page_bg_img = f"""
 [data-testid="stAppViewContainer"] > .main {{
 background-image: url("https://i.pinimg.com/1200x/47/26/f1/4726f134466769d03b957290290c101f.jpg");
 background-size: cover;
-back
 }}
 
+[data-test="stHeading"] > .main{{
+background-color: #556f9f;
+}}
+
+[data-testid="stSidebar"] {{
+background-color: #556f9f;
+}}
 
 </style>
 """
@@ -69,11 +75,44 @@ def new_notebook():
 
 # Main function to create the Streamlit app
 def main():
+<<<<<<< HEAD
+    #st.session_state.tryArray.append("Hello")
+    #print(st.session_state.tryArray)
+    # Read the username from the file
+    try:
+        with open("user_data.txt", "r") as file:
+            username = file.readline()
+            if username:
+                st.title(f"{st.session_state.username}'s Home Page")
+                st.markdown('<style>div.Widget.row-widget.stTitle { background-color: #7795CB; }</style>', unsafe_allow_html=True)
+                st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
+                page = st.sidebar.radio("Select a page", [f"{st.session_state.username}'s Homepage", "Domain Expansion", "The Shibuya Incident", "Nanami's Beach"])
+            else:
+                st.warning("Please sign up first.")
+    except FileNotFoundError:
+        st.warning("Please sign up first.")
+
+    # with st.sidebar:
+    #     selected = option_menu(
+    #         menu_title= "course list",
+    #         options= ["Home", "Domain Expansion", "The Shibuya Incident", "Nanami's beach"],
+    #     )
+        
+    if page == "Domain Expansion":
+        domain_expansion()
+    elif page == "The Shibuya Incident":
+        shibuya_incident()
+    elif page == "Nanami's Beach":
+        nanamis_beach()
+
+
+=======
     if "NOTEBOOKS" not in st.session_state:
         print("overwriting session state")
         st.session_state["NOTEBOOKS"] = [] #list of all the ["NOTEBOOKS"] in memory
         #st.session_state["notebook_title"] = ''
         #st.session_state["note_id"] = 0
+>>>>>>> 683243afe92bb88f784830cf86cd12e2851612cf
     
     if "notebook_title" not in st.session_state:
         st.session_state["notebook_title"] = ''
