@@ -8,9 +8,15 @@ page_bg_img = f"""
 [data-testid="stAppViewContainer"] > .main {{
 background-image: url("https://i.pinimg.com/1200x/47/26/f1/4726f134466769d03b957290290c101f.jpg");
 background-size: cover;
-back
 }}
 
+[data-test="stHeading"] > .main{{
+background-color: #556f9f;
+}}
+
+[data-testid="stSidebar"] {{
+background-color: #556f9f;
+}}
 
 </style>
 """
@@ -49,6 +55,7 @@ def main():
             username = file.readline()
             if username:
                 st.title(f"{st.session_state.username}'s Home Page")
+                st.markdown('<style>div.Widget.row-widget.stTitle { background-color: #7795CB; }</style>', unsafe_allow_html=True)
                 st.write("Welcome to your homepage! Here is this week's to-do's. be sure to navigate to your courses to take notes!")
                 page = st.sidebar.radio("Select a page", [f"{st.session_state.username}'s Homepage", "Domain Expansion", "The Shibuya Incident", "Nanami's Beach"])
             else:
