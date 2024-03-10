@@ -8,13 +8,6 @@ def homepage():
         username = file.readline()
         if username:
             st.title(f"{username}'s Home Page")
-    
-# class Notebooks:
-#     NOTEBOOKS = []
-#     @st.cache_data
-#     def getNotebooks():
-#         x = Notebooks
-#         return x
 
 #classes for notebook and class
 class Notebook:
@@ -25,21 +18,6 @@ class Notebook:
 class Note: 
     title = "New Note"
     note = ""
-
-# Function to display the Domain Expansion page content
-# def domain_expansion():
-#     st.title("Domain Expansion Page")
-#     st.write("This is the Domain Expansion page content.")
-
-# # Function to display The Shibuya Incident page content
-# def shibuya_incident():
-#     st.title("The Shibuya Incident Page")
-#     st.write("This is The Shibuya Incident page content.")
-
-# # Function to display Nanami's Beach page content
-# def nanamis_beach():
-#     st.title("Nanami's Beach Page")
-#     st.write("This is Nanami's Beach page content.")
 
 def make_notebook(): #TODO: name is not being passed correctly
     st.session_state["notebook"] = Notebook()
@@ -79,7 +57,7 @@ def main():
         if username:
             st.sidebar.button("new notebook", on_click=new_notebook)
             for i in st.session_state.NOTEBOOKS:
-                st.sidebar.button(st.session_state["notebook_title"], on_click=print, args=("success", ), key=st.session_state["note_id"]-st.session_state.NOTEBOOKS.index(i))
+                st.sidebar.button(i.title, on_click=print, args=("success", ), key=st.session_state["note_id"]-st.session_state.NOTEBOOKS.index(i))
     
 
 # Run the Streamlit app
